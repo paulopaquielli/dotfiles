@@ -1,0 +1,47 @@
+---
+- name: Install extra CLI productivity tools (fd-find, tldr, btop)
+  ansible.builtin.apt:
+    name:
+      - fd-find
+      - tldr
+      - btop
+    state: present
+
+- name: Create link for fd-find (Ubuntu installs it as fdfind)
+  ansible.builtin.file:
+    src: /usr/bin/fdfind
+    dest: /usr/local/bin/fd
+    state: link
+    force: yes
+
+- name: Install zoxide
+  ansible.builtin.shell: 
+    cmd: curl -sSfL https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | sh
+  args:
+    creates: ~/.local/bin/zoxide
+  become: no
+
+- name: Download eza GPG key
+  ansible.builtin.get_url:
+    url: https://raw.githubusercontent.com/eza-community/eza/main/deb.asc
+    dest: /etc/apt/keyrings/gierens.asc
+    mode: '0644'
+
+- name: Add eza apt repository
+  ansible.builtin.apt_repository:
+    repo: "deb [signed-by=/etc/apt/keyrings/gierens.asc] http://apt.fury.io/eza/ /"
+    state: present
+    update_cache: yes
+    filename: eza
+
+- name: Install eza
+  ansible.builtin.apt:
+    name: eza
+    state: present
+
+- name: Install starship prompt
+  ansible.builtin.shell:
+    cmd: curl -sS https://starship.rs/install.sh | sh -s -- -y
+  args:
+    creates: /usr/local/bin/starship
+  become: yes

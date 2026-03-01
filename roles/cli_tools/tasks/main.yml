@@ -1,0 +1,49 @@
+---
+- name: Add lazydocker and lazygit PPA repository
+  ansible.builtin.apt_repository:
+    repo: "ppa:lazygit-team/release"
+    state: present
+    update_cache: yes
+
+- name: Create directory for GitHub CLI keyring
+  ansible.builtin.file:
+    path: /etc/apt/keyrings
+    state: directory
+    mode: '0755'
+
+- name: Download GitHub CLI GPG key
+  ansible.builtin.get_url:
+    url: https://cli.github.com/packages/githubcli-archive-keyring.gpg
+    dest: /usr/share/keyrings/githubcli-archive-keyring.gpg
+    mode: '0644'
+
+- name: Add GitHub CLI repository
+  ansible.builtin.apt_repository:
+    repo: "deb [arch=amd64 signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main"
+    state: present
+    update_cache: yes
+    filename: github-cli
+
+- name: Install CLI Tools (lazygit, lazygo, gh, jq, fzf, ripgrep, bat)
+  ansible.builtin.apt:
+    name:
+      - lazygit
+      - gh
+      - jq
+      - fzf
+      - ripgrep
+      - bat
+    state: present
+
+- name: Download lazydocker install script
+  ansible.builtin.get_url:
+    url: https://raw.githubusercontent.com/jesseduffield/lazydocker/master/scripts/install_update_linux.sh
+    dest: /tmp/install_lazydocker.sh
+    mode: '0755'
+  become: no
+
+- name: Install lazydocker
+  ansible.builtin.command: /tmp/install_lazydocker.sh
+  args:
+    creates: ~/.local/bin/lazydocker
+  become: no

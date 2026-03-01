@@ -1,0 +1,26 @@
+---
+- name: Create directory for 1Password GPG key
+  ansible.builtin.file:
+    path: /usr/share/keyrings
+    state: directory
+    mode: '0755'
+
+- name: Add 1Password repository key
+  ansible.builtin.get_url:
+    url: https://downloads.1password.com/linux/keys/1password.asc
+    dest: /usr/share/keyrings/1password-archive-keyring.asc
+    mode: '0644'
+
+- name: Add 1Password apt repository
+  ansible.builtin.apt_repository:
+    repo: "deb [arch=amd64 signed-by=/usr/share/keyrings/1password-archive-keyring.asc] https://downloads.1password.com/linux/debian/amd64 stable main"
+    state: present
+    update_cache: yes
+    filename: 1password
+
+- name: Install 1Password and CLI
+  ansible.builtin.apt:
+    name:
+      - 1password
+      - 1password-cli
+    state: present

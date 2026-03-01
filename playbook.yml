@@ -1,0 +1,19 @@
+---
+- name: Ubuntu Workstation Provisioning
+  hosts: localhost
+  connection: local
+  become: yes
+
+  roles:
+    - common
+    - docker
+    - asdf
+    - brave
+    - 1password
+    - alacritty
+    - oh-my-zsh
+    - cli_tools
+    - dbeaver
+    - ides
+    - omakub_tools
+    - dotfiles

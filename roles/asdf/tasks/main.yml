@@ -1,0 +1,37 @@
+---
+- name: Check if asdf uses ~/.bashrc or ~/.zshrc
+  stat:
+    path: "{{ ansible_env.HOME }}/.zshrc"
+  register: zshrc_file
+  become: no
+
+- name: Define shell rc path
+  set_fact:
+    shell_rc_path: "{{ ansible_env.HOME }}/.zshrc"
+  when: zshrc_file.stat.exists
+
+- name: Define shell rc path fallback to bashrc
+  set_fact:
+    shell_rc_path: "{{ ansible_env.HOME }}/.bashrc"
+  when: not zshrc_file.stat.exists
+
+- name: Clone asdf repository
+  git:
+    repo: https://github.com/asdf-vm/asdf.git
+    dest: "{{ ansible_env.HOME }}/.asdf"
+    version: v0.14.0
+  become: no
+
+- name: Add asdf to shell profile
+  lineinfile:
+    path: "{{ shell_rc_path }}"
+    line: ". $HOME/.asdf/asdf.sh"
+    create: yes
+  become: no
+
+- name: Add asdf completions to shell profile
+  lineinfile:
+    path: "{{ shell_rc_path }}"
+    line: ". $HOME/.asdf/completions/asdf.bash"
+    create: yes
+  become: no

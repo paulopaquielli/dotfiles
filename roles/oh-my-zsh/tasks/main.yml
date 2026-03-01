@@ -1,0 +1,31 @@
+---
+- name: Install Zsh and Git
+  ansible.builtin.apt:
+    name:
+      - zsh
+      - git
+    state: present
+
+- name: Get current user
+  ansible.builtin.command: whoami
+  register: current_user
+  changed_when: false
+  become: no
+
+- name: Change user shell to zsh
+  ansible.builtin.user:
+    name: "{{ current_user.stdout }}"
+    shell: /bin/zsh
+  become: yes
+
+- name: Check if oh-my-zsh is installed
+  ansible.builtin.stat:
+    path: "~/.oh-my-zsh"
+  register: ohmyzsh_dir
+  become: no
+
+- name: Install oh-my-zsh
+  ansible.builtin.shell: 
+    cmd: RUNZSH=no sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+  when: not ohmyzsh_dir.stat.exists
+  become: no

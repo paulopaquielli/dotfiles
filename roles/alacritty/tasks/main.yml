@@ -1,0 +1,11 @@
+---
+- name: Add Alacritty PPA (aslatter/ppa)
+  ansible.builtin.apt_repository:
+    repo: "ppa:aslatter/ppa"
+    state: present
+    update_cache: yes
+
+- name: Install Alacritty
+  ansible.builtin.apt:
+    name: alacritty
+    state: present

@@ -1,0 +1,56 @@
+# Omakub-style Starship Configuration
+# Get editor completions based on the config schema
+"$schema" = 'https://starship.rs/config-schema.json'
+
+add_newline = true
+
+[character]
+success_symbol = "[➜](bold green)"
+error_symbol = "[➜](bold red)"
+
+[directory]
+truncation_length = 3
+truncate_to_repo = true
+style = "bold cyan"
+
+[git_branch]
+symbol = "🌱 "
+truncation_length = 4
+truncation_symbol = ""
+style = "bold purple"
+
+[git_commit]
+commit_hash_length = 4
+tag_symbol = "🔖 "
+
+[git_state]
+format = '[\($state( $progress_current/$progress_total)\)]($style) '
+cherry_pick = "[🍒 PICKING](bold red)"
+
+[git_status]
+conflicted = "🏳"
+ahead = "🏎💨"
+behind = "😰"
+diverged = "😵"
+untracked = "🤷‍"
+stashed = "📦"
+modified = "📝"
+staged = '[++\($count\)](green)'
+renamed = "📛"
+deleted = "🗑"
+
+[cmd_duration]
+min_time = 500
+format = "[$duration](bold yellow)"
+
+[docker_context]
+symbol = "🐳 "
+
+[ruby]
+symbol = "💎 "
+
+[python]
+symbol = "🐍 "
+
+[nodejs]
+symbol = "🌲 "

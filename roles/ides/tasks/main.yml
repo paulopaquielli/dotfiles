@@ -1,0 +1,58 @@
+---
+- name: Add Microsoft GPG key for VS Code
+  ansible.builtin.get_url:
+    url: https://packages.microsoft.com/keys/microsoft.asc
+    dest: /usr/share/keyrings/packages.microsoft.gpg
+    mode: '0644'
+
+- name: Add VS Code repository
+  ansible.builtin.apt_repository:
+    repo: "deb [arch=amd64 signed-by=/usr/share/keyrings/packages.microsoft.gpg] https://packages.microsoft.com/repos/code stable main"
+    state: present
+    update_cache: yes
+    filename: vscode
+
+- name: Install VS Code
+  ansible.builtin.apt:
+    name: code
+    state: present
+
+- name: Check if Cursor AppImage exists
+  ansible.builtin.stat:
+    path: /opt/cursor.AppImage
+  register: cursor_exists
+
+- name: Download Cursor AppImage
+  ansible.builtin.get_url:
+    url: https://downloader.cursor.sh/linux/appImage/x64
+    dest: /opt/cursor.AppImage
+    mode: '0755'
+  when: not cursor_exists.stat.exists
+
+- name: Create Cursor desktop entry
+  ansible.builtin.copy:
+    dest: /usr/share/applications/cursor.desktop
+    content: |
+      [Desktop Entry]
+      Name=Cursor
+      Exec=/opt/cursor.AppImage
+      Icon=code
+      Type=Application
+      Categories=Development;TextEditor;
+
+- name: Install Gemini CLI (assuming npm is available, otherwise this might fail if node is not installed)
+  ansible.builtin.shell: npm install -g @google/gemini-cli
+  ignore_errors: true
+  become: yes
+
+- name: Install Antigravity (Google IDE) via Gemini CLI
+  ansible.builtin.command: gemini ide install
+  ignore_errors: true
+  become: no
+
+- name: Install ChatGPT Desktop (unofficial snap)
+  ansible.builtin.command: snap install chatgpt-desktop
+  ignore_errors: true
+  become: yes
+
+
