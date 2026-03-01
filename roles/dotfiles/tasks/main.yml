@@ -1,14 +1,14 @@
 ---
 - name: Ensure .config directory exists
   ansible.builtin.file:
-    path: "{{ ansible_env.HOME }}/.config"
+    path: "{{ real_home }}/.config"
     state: directory
     mode: '0755'
   become: no
 
 - name: Ensure .config/starship exists
   ansible.builtin.file:
-    path: "{{ ansible_env.HOME }}/.config/starship"
+    path: "{{ real_home }}/.config/starship"
     state: directory
     mode: '0755'
   become: no
@@ -16,7 +16,7 @@
 - name: Copy .zshrc
   ansible.builtin.copy:
     src: .zshrc
-    dest: "{{ ansible_env.HOME }}/.zshrc"
+    dest: "{{ real_home }}/.zshrc"
     mode: '0644'
     backup: yes
   become: no
@@ -24,6 +24,6 @@
 - name: Copy starship.toml
   ansible.builtin.copy:
     src: starship.toml
-    dest: "{{ ansible_env.HOME }}/.config/starship.toml"
+    dest: "{{ real_home }}/.config/starship.toml"
     mode: '0644'
   become: no

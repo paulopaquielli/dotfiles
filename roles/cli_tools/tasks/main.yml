@@ -45,5 +45,5 @@
 - name: Install lazydocker
   ansible.builtin.command: /tmp/install_lazydocker.sh
   args:
-    creates: ~/.local/bin/lazydocker
+    creates: "{{ real_home }}/.local/bin/lazydocker"
   become: no

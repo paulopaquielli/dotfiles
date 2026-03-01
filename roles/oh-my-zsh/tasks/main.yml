@@ -20,7 +20,7 @@
 
 - name: Check if oh-my-zsh is installed
   ansible.builtin.stat:
-    path: "~/.oh-my-zsh"
+    path: "{{ real_home }}/.oh-my-zsh"
   register: ohmyzsh_dir
   become: no
 
