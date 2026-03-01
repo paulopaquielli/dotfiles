@@ -1,9 +1,21 @@
 ---
-- name: Add lazydocker and lazygit PPA repository
-  ansible.builtin.apt_repository:
-    repo: "ppa:lazygit-team/release"
-    state: present
-    update_cache: yes
+- name: Create local bin directory
+  ansible.builtin.file:
+    path: "{{ real_home }}/.local/bin"
+    state: directory
+    mode: '0755'
+  become: no
+
+- name: Install lazygit via script
+  ansible.builtin.shell: |
+    LAZYGIT_VERSION=$(curl -s "https://api.github.com/repos/jesseduffield/lazygit/releases/latest" | jq -r .tag_name)
+    curl -Lo lazygit.tar.gz "https://github.com/jesseduffield/lazygit/releases/latest/download/lazygit_${LAZYGIT_VERSION//v/}_Linux_x86_64.tar.gz"
+    tar xf lazygit.tar.gz lazygit
+    install lazygit {{ real_home }}/.local/bin
+    rm lazygit.tar.gz lazygit
+  args:
+    creates: "{{ real_home }}/.local/bin/lazygit"
+  become: no
 
 - name: Create directory for GitHub CLI keyring
   ansible.builtin.file:
@@ -27,7 +39,6 @@
 - name: Install CLI Tools (lazygit, lazygo, gh, jq, fzf, ripgrep, bat)
   ansible.builtin.apt:
     name:
-      - lazygit
       - gh
       - jq
       - fzf
