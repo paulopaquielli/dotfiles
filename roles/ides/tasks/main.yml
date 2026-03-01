@@ -27,6 +27,11 @@
     url: https://downloader.cursor.sh/linux/appImage/x64
     dest: /opt/cursor.AppImage
     mode: '0755'
+  register: cursor_download
+  until: cursor_download is succeeded or cursor_download is failed
+  retries: 3
+  delay: 5
+  ignore_errors: yes
   when: not cursor_exists.stat.exists
 
 - name: Create Cursor desktop entry
@@ -39,6 +44,7 @@
       Icon=code
       Type=Application
       Categories=Development;TextEditor;
+  when: (cursor_exists.stat.exists) or (not cursor_exists.stat.exists and (cursor_download is success or not cursor_download.failed|default(true)))
 
 - name: Install Gemini CLI (assuming npm is available, otherwise this might fail if node is not installed)
   ansible.builtin.shell: npm install -g @google/gemini-cli
