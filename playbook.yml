@@ -5,8 +5,8 @@
   become: yes
 
   vars:
-    real_user: "{{ lookup('env', 'USER') | default(lookup('env', 'LOGNAME'), true) }}"
-    real_home: "/home/{{ lookup('env', 'USER') | default(lookup('env', 'LOGNAME'), true) }}"
+    real_user: "{{ lookup('env', 'USER') | default(lookup('env', 'LOGNAME'), true) | default(lookup('pipe', 'whoami'), true) }}"
+    real_home: "{{ lookup('env', 'HOME') | default('/home/' + real_user, true) }}"
 
   roles:
     - common

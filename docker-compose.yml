@@ -1,0 +1,14 @@
+version: '3.8'
+
+services:
+  ubuntu-test:
+    image: ubuntu:24.04
+    container_name: ubuntu_provisioning_test
+    volumes:
+      - .:/workspace
+    working_dir: /workspace
+    command: tail -f /dev/null
+    environment:
+      - DEBIAN_FRONTEND=noninteractive
+    # We need to run the container as root to be able to install packages and use sudo inside
+    user: root
