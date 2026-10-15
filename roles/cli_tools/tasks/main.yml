@@ -27,6 +27,14 @@
       - ripgrep
       - bat
     state: present
+
+- name: Create symlink for bat (Ubuntu installs it as batcat)
+  ansible.builtin.file:
+    src: /usr/bin/batcat
+    dest: /usr/local/bin/bat
+    state: link
+    force: yes
+
 - name: Create local bin directory
   ansible.builtin.file:
     path: "{{ real_home }}/.local/bin"
