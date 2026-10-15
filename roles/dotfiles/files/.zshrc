@@ -17,9 +17,9 @@ fi
 
 # Colorize output with eza (fallback to ls)
 if command -v eza >/dev/null 2>&1; then
-  alias ls='eza --icons'
-  alias ll='eza -lh --icons --grid --group-directories-first'
-  alias la='eza -lah --icons --grid --group-directories-first'
+  alias ls='eza --icons=always'
+  alias ll='eza -lh --icons=always --grid --group-directories-first'
+  alias la='eza -lah --icons=always --grid --group-directories-first'
 fi
 
 # Modern cat via bat / batcat

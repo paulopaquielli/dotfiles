@@ -45,3 +45,19 @@
   args:
     creates: /usr/local/bin/starship
   become: yes
+
+- name: Ensure user fonts directory exists
+  ansible.builtin.file:
+    path: "{{ real_home }}/.local/share/fonts/JetBrainsMono"
+    state: directory
+    mode: '0755'
+  become: no
+
+- name: Install JetBrainsMono Nerd Font
+  ansible.builtin.shell: |
+    curl -sL "https://github.com/ryanoasis/nerd-fonts/releases/latest/download/JetBrainsMono.tar.xz" | tar -xJ -C "{{ real_home }}/.local/share/fonts/JetBrainsMono"
+    fc-cache -f "{{ real_home }}/.local/share/fonts"
+  args:
+    creates: "{{ real_home }}/.local/share/fonts/JetBrainsMono/JetBrainsMonoNerdFont-Regular.ttf"
+  become: no
+
